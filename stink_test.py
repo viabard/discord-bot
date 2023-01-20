@@ -21,5 +21,5 @@ async def on_message(message):
         await message.channel.send('Hello!')
 
 
-load_dotenv()
-client.run(os.environment["api_token"])
+load_dotenv('token.env')
+client.run(os.environ["api_token"])

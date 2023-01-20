@@ -6,3 +6,8 @@ cairosvg
 ffmpeg
 asyncio
 python-dotenv
+argparse
+pathlib
+opencv-python
+#torch -gotta figure that out
+numpy

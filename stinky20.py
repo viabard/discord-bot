@@ -3,6 +3,7 @@ import os
 
 import discord
 from discord.ext import commands
+
 import bs4, requests, time, random
 import subprocess
 import qrcode, qrcode.image.svg
@@ -10,24 +11,22 @@ import cairosvg
 import asyncio
 
 
-client = commands.Bot(command_prefix='-')
+intents = discord.Intents.default()
+intents.message_content = True
 
-@client.event
+bot = commands.Bot(command_prefix='-', intents=intents)
+
+@bot.event
 async def on_ready():
     print("stinky 2.0 is ready for ascention")
 
-@client.event
-async def on_message(message):
-    print(message)
-    print(type(message))
-
-@client.command(name='wee')
+@bot.command()
 async def wee(ctx, message):
     print(ctx)
     print(message)
     await ctx.send('weeeee')
 
-@client.command()
+@bot.command()
 async def ascii(ctx, num_col="90", mode="simple"):
     """
     -ascii [columns] [mode (simple/complex)]
@@ -74,12 +73,12 @@ async def ascii(ctx, num_col="90", mode="simple"):
         await ctx.send("Attach an image to a *-ascii* message")
 
 
-@client.command()
+@bot.command()
 async def sus(ctx):
     print(f"sus called by '{ctx.message.author.name}' on '{time.asctime()}'")
     if ctx.message.author.voice != None:
         channel = ctx.message.author.voice.channel
-        voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+        voice = discord.utils.get(bot.voice_bots, guild=ctx.guild)
         #print(voice, dir(voice))
         if voice == None:
             vc= await channel.connect()
@@ -94,19 +93,19 @@ async def sus(ctx):
     else:
         await ctx.send("Ur not in voice... kinda sussy...")
 
-@client.command()
+@bot.command()
 async def sonic(ctx):
     print(f"Sonic called by '{ctx.message.author.name}' on '{time.asctime()}'")
     #print(random.choice(os.listdir("./oekaki")))
     await ctx.send(file=discord.File("./oekaki/" + random.choice(os.listdir("oekaki"))))
 
 
-@client.command()
+@bot.command()
 async def lol(ctx):
     print(f"lol called by '{ctx.message.author.name}' on '{time.asctime()}'")
     if ctx.message.author.voice != None:
         channel = ctx.message.author.voice.channel
-        voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+        voice = discord.utils.get(bot.voice_bots, guild=ctx.guild)
         #print(voice, dir(voice))
         if voice == None:
             vc= await channel.connect()
@@ -121,8 +120,8 @@ async def lol(ctx):
     else:
         await ctx.send("Ur not in voice... kinda haha...")
 
-@client.command()
-async def detect(ctx, message=None):
+@bot.command()
+async def detect_NOTWORKING(ctx, message=None):
     """Attach an image to a -detect message..."""
     print(f"Detect called by '{ctx.message.author.name}' on '{time.asctime()}'")
     if len(ctx.message.attachments) > 0:
@@ -161,7 +160,7 @@ async def detect(ctx, message=None):
     else:
         await ctx.send("Attach an image to a *-detect* message, or give a link to an image...")
 
-@client.command()
+@bot.command()
 async def stinky(ctx):
     """
     uh oh
@@ -169,7 +168,7 @@ async def stinky(ctx):
     print(f"Stinky called by '{ctx.message.author.name}' on '{time.asctime()}'")
     await ctx.send("uh oh")
 
-@client.command(pass_context=True)
+@bot.command(pass_context=True)
 async def cowsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, funny poop, lallalalallala\nMake sure your message has quotes around it if there are spaces..."):
     """-cowsay "message here", a 'cow' says ur message
     """
@@ -197,7 +196,7 @@ async def cowsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha
         except:
             await ctx.send("Sorry, but the cow was too large for discord to handle... sadge")
 
-@client.command()
+@bot.command()
 async def dsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, funny poop, lallalalallala\nMake sure your message has quotes around it if there are spaces..."):
     """-dsay "message here"
     """
@@ -206,7 +205,7 @@ async def dsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, 
     output = output.stdout.decode("utf-8")
     await ctx.send("```"+output+"```")
 
-@client.command()
+@bot.command()
 async def fortune(ctx):
     """gives a fortune from a cow"""
     print(f"Fortune called by '{ctx.message.author.name}' on '{time.asctime()}'")
@@ -216,7 +215,7 @@ async def fortune(ctx):
     output = output.stdout.decode("utf-8")
     await ctx.send("```"+output+"```")
 
-@client.command()
+@bot.command()
 async def qr(ctx, message):
     """-qr "information here" """
     print(f"QR called by '{ctx.message.author.name}' on '{time.asctime()}'")
@@ -226,7 +225,7 @@ async def qr(ctx, message):
     cairosvg.svg2png(url="temp.svg", write_to="temp.png")
     await ctx.send(file=discord.File("temp.png"))
 
-@client.command()
+@bot.command()
 async def roll(ctx):
     """
     -roll int (defulat 1 to 100)
@@ -244,40 +243,9 @@ async def roll(ctx):
     else:
         await ctx.send("**" + ctx.message.author.name+ "** rolled **" + str(random.randint(0,100)) +"**")
 
-@client.command()
-async def toggleLEDbot(ctx, message=None):
-    """
-    for kyle and josh
-    """
-    print(f"toggleLEDbot called by '{ctx.message.author.name}' on '{time.asctime()}'")
-    ids = {'256198066812616704': 'Kyle', '186653999758442497': 'Josh'}
-
-    if str(ctx.message.author.id) in ids.keys():
-        with open('toggle.txt', 'r') as f:
-            read = str(f.readlines()[0])
-            #print(read, type(read))
-            if read == '0':
-                turning_on = True
-            else:
-                turning_on = False
-
-        with open('toggle.txt', 'w') as f:
-            if turning_on:
-                f.write('1')
-            else:
-                f.write('0')
-        if turning_on:
-            os.system("ssh pi@joshpi0.local sudo killall pigpiod")
-            os.system("ssh pi@joshpi0.local sudo pigpiod")
-            await ctx.send("Now **active**")
-        else:
-            os.system("ssh pi@joshpi0.local sudo killall pigpiod")
-            await ctx.send("Now **inactive**")
-    else:
-        await ctx.send(f"You aren't any of these fine folks: {str(ids.values())}")
 
 
-@client.command()
+@bot.command()
 async def diagonal(ctx):
     """
     -diagonal messagewithnospaces integer
@@ -323,5 +291,5 @@ async def diagonal(ctx):
         await ctx.send("```Usage: -diagonal messagewithnospaces integer\nExample: -diagonal hahafart 3```")
 
 
-load_dotenv()
-client.run(os.environment["api_token"])
+load_dotenv('token.env')
+bot.run(os.environ["api_token"])
