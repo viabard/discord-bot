@@ -5,3 +5,4 @@ qrcode
 cairosvg
 ffmpeg
 asyncio
+python-dotenv

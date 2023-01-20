@@ -1,10 +1,12 @@
+from dotenv import load_dotenv
+import os
+
 import discord
 from discord.ext import commands
 import bs4, requests, time, random
 import subprocess
 import qrcode, qrcode.image.svg
 import cairosvg
-import os
 import asyncio
 
 
@@ -321,4 +323,5 @@ async def diagonal(ctx):
         await ctx.send("```Usage: -diagonal messagewithnospaces integer\nExample: -diagonal hahafart 3```")
 
 
-client.run("NzY2NDU1NzM4OTIyMDQxMzU1.X4jniA.OAnAer2OjXlpae1yiZhk2ONnNtE")
+load_dotenv()
+client.run(os.environment["api_token"])
