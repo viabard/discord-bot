@@ -1,0 +1,7 @@
+discord
+bs4
+requests
+qrcode
+cairosvg
+ffmpeg
+asyncio
