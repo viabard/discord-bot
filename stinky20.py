@@ -121,7 +121,7 @@ async def lol(ctx):
         await ctx.send("Ur not in voice... kinda haha...")
 
 @bot.command()
-async def detect_NOTWORKING(ctx, message=None):
+async def detect(ctx, message=None):
     """Attach an image to a -detect message..."""
     print(f"Detect called by '{ctx.message.author.name}' on '{time.asctime()}'")
     if len(ctx.message.attachments) > 0:
