@@ -2,3 +2,9 @@ detected.*
 temp.*
 test.png
 token.env
+yolov5/
+yolov5
+yolov5/*
+ASCII-generator/
+ASCII-generator
+ASCII-generator/*
