@@ -145,6 +145,7 @@ async def detect_NOTWORKING(ctx, message=None):
             await ctx.send("Detecting objects in **" + ctx.message.author.name + "**'s image...")
             subprocess.run(["rm", "-r", "runs/detect/exp"])
             out = subprocess.run(["python3", "yolov5/detect.py", "--source", "detected.png", "--weights", "yolov5/weights/yolov5s_old.pt", "--conf", "0.25"], stdout = subprocess.PIPE, stderr=subprocess.STDOUT)
+            print(out)
             if out.returncode == 0:
                 out = out.stdout.decode("utf-8")
                 out = out.split('\n')[-4]
