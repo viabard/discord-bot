@@ -21,12 +21,6 @@ async def on_ready():
     print("stinky 2.0 is ready for ascention")
 
 @bot.command()
-async def wee(ctx, message):
-    print(ctx)
-    print(message)
-    await ctx.send('weeeee')
-
-@bot.command()
 async def ascii(ctx, num_col="90", mode="simple"):
     """
     -ascii [columns] [mode (simple/complex)]
@@ -92,12 +86,6 @@ async def sus(ctx):
             await ctx.send("Already being sussy ")
     else:
         await ctx.send("Ur not in voice... kinda sussy...")
-
-@bot.command()
-async def sonic(ctx):
-    print(f"Sonic called by '{ctx.message.author.name}' on '{time.asctime()}'")
-    #print(random.choice(os.listdir("./oekaki")))
-    await ctx.send(file=discord.File("./oekaki/" + random.choice(os.listdir("oekaki"))))
 
 
 @bot.command()
