@@ -21,6 +21,33 @@ async def on_ready():
     print("stinky 2.0 is ready for ascention")
 
 @bot.command()
+async def gorf(ctx):
+    """
+    random garfield comic
+    """
+    print(f"gorf called by '{ctx.message.author.name}' on '{time.asctime()}'")
+    garfield_request = requests.get('https://www.gocomics.com/random/garfield')
+    if garfield_request.status_code == 200:
+        soup = bs4.BeautifulSoup(garfield_request.text, 'html.parser')
+        date = str(soup.title)[7:-8]
+        for meta_line in soup.find_all('meta'):
+            # the comic is hosted on this asset website
+            meta_line = meta_line.get('content')
+            if type(meta_line) == str and meta_line.startswith('https://assets.amuniversal.com'):
+                img_request = requests.get(meta_line)
+                if img_request.status_code == 200:
+                    with open('garf.gif', 'wb') as f:
+                        f.write(img_request.content)
+                        await ctx.send(date,file=discord.File("garf.gif"))
+                    break
+                else:
+                    await ctx.send('Server hosting file denied us garfield')
+    else:
+        await ctx.send('Could not find garfield asset')
+
+
+
+@bot.command()
 async def ascii(ctx, num_col="90", mode="simple"):
     """
     -ascii [columns] [mode (simple/complex)]
