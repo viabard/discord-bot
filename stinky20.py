@@ -31,7 +31,7 @@ async def temp(ctx):
     output = output.strip() # remove \n
     celsius = float(output.strip()[5:-2])
     fahrenheit = celsius * 9/5 + 32
-    await ctx.send(output + f' {fahrenheit}\'F')
+    await ctx.send(output + f' {fahrenheit:.1f}\'F')
 
 @bot.command()
 async def gorf(ctx):
