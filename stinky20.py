@@ -21,6 +21,19 @@ async def on_ready():
     print("stinky 2.0 is ready for ascention")
 
 @bot.command()
+async def temp(ctx):
+    """
+    prints temp of server
+    """
+    print(f"temp called by '{ctx.message.author.name}' on '{time.asctime()}'")
+    output = subprocess.run(["vcgencmd", "measure_temp"], stdout = subprocess.PIPE, stderr=subprocess.STDOUT) # create a subprocess that gets the temperature
+    output = output.stdout.decode("utf-8") # decode output
+    output = output.strip() # remove \n
+    celsius = float(output.strip()[5:-2])
+    fahrenheit = celsius * 9/5 + 32
+    await ctx.send(output + f' {fahrenheit}\'F')
+
+@bot.command()
 async def gorf(ctx):
     """
     random garfield comic
