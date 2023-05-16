@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 import bs4, requests, time, random
+import wikiquote
 import subprocess
 import qrcode, qrcode.image.svg
 import cairosvg
@@ -187,7 +188,7 @@ async def detect(ctx, message=None):
         out = out.stdout.decode("utf-8")
         out = out.split('\n')[-4]
         await discord.Message.delete(ctx.message)
-        try:
+        try: 
             await ctx.send("**"+ctx.message.author.name + f"**'s image detected... **{str(' '.join(out.split(' ')[4:-2]))[:-1]}** *(no boxes == nothing/false negative)*",file=discord.File("runs/detect/exp/detected.png"))
         except:
             await ctx.send("**"+ctx.message.author.name + "**'s image was probably too large, couldn't send...")
@@ -223,11 +224,31 @@ async def stinky(ctx):
     print(f"Stinky called by '{ctx.message.author.name}' on '{time.asctime()}'")
     await ctx.send("uh oh")
 
+#@bot.command(pass_context=True)
+#async def cowsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, funny poop, lallalalallala\nMake sure your message has quotes around it if there are spaces..."):
+#    """-cowsay "message here", a 'cow' says ur message
+#    """
+#    print(f"Cowsay called by '{ctx.message.author.name}' on '{time.asctime()}'")
+#    counter = -1
+#    for word in message.split(' '):
+#        if word.startswith('-'):
+#            counter += 1
+#    if counter >= len(message.split(' ')) - 1:
+#        await ctx.send('stop trying to break things')
+#    else:
+#        options = {0: '', 1: "-b", 2: "-d", 3: "-g", 4: "-p", 5: "-s", 6: "-t", 7: "-w", 8: "-y"}
+#        output = subprocess.run(["cowsay", random.choice(options), message], stdout = subprocess.PIPE, stderr=subprocess.STDOUT)
+#        output = output.stdout.decode("utf-8")
+#        try:
+#            await ctx.send("```"+output+"```")
+#        except:
+#            await ctx.send("Sorry, but the cow was too large for discord to handle... sadge")
+
 @bot.command(pass_context=True)
-async def cowsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, funny poop, lallalalallala\nMake sure your message has quotes around it if there are spaces..."):
-    """-cowsay "message here", a 'cow' says ur message
+async def quote(ctx, message="Make sure your search portion has quotes around it if there are spaces..."):
+    """-quote "search here", searches wikiquote and returns a random quote from that search
     """
-    print(f"Cowsay called by '{ctx.message.author.name}' on '{time.asctime()}'")
+    print(f"Quote called by '{ctx.message.author.name}' on '{time.asctime()}'")
     counter = -1
     for word in message.split(' '):
         if word.startswith('-'):
@@ -235,21 +256,22 @@ async def cowsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha
     if counter >= len(message.split(' ')) - 1:
         await ctx.send('stop trying to break things')
     else:
-        cows = [x for x in os.listdir("/home/pi/.cowsay") if x.endswith(".cow")]
-        #print(cows)
-        print(f"-f /home/pi/.cowsay/{random.choice(cows)}")
-        options = {0: '', 1: "-b", 2: "-d", 3: "-g", 4: "-p", 5: "-s", 6: "-t", 7: "-w", 8: "-y", 9: f"/home/pi/.cowsay/{random.choice(cows)}"}
-        r = random.randrange(9)+1
-        if r == 9:
-            output = subprocess.run(["cowsay", "-f", options.get(9), message], stdout = subprocess.PIPE, stderr=subprocess.STDOUT)
-            output = output.stdout.decode("utf-8")
-        else:
-            output = subprocess.run(["cowsay", options.get(r), message], stdout = subprocess.PIPE, stderr=subprocess.STDOUT)
-            output = output.stdout.decode("utf-8")
+        s = wikiquote.search(message)
+        output = None
         try:
-            await ctx.send("```"+output+"```")
+            person = s[0]
+            quotes = wikiquote.quotes(person, 50)
+            output = random.choice(quotes)
+        except IndexError:
+            await ctx.send(f"No quotes found for {message}...")
+            return None
+
+        try:
+            await ctx.send(">>> "+output+" \n \n"+person)
         except:
-            await ctx.send("Sorry, but the cow was too large for discord to handle... sadge")
+            await ctx.send("Quote was probably too large for discord to handle...")
+        
+        
 
 @bot.command()
 async def dsay(ctx, message="You forgot to put a message in. Uhoh stinky, haha, funny poop, lallalalallala\nMake sure your message has quotes around it if there are spaces..."):
